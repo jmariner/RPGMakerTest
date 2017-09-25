@@ -384,7 +384,6 @@ DataManager.isDatabaseLoaded = function() {
     this.processSLSNotetagsA($dataArmors);
     this.processSLSNotetags1($dataClasses);
     this.processSLSNotetags2($dataSkills);
-	this.processGroupNotetags($dataClasses, $dataSkills);
     Yanfly._loaded_YEP_SkillLearnSystem = true;
   }
   return true;
@@ -1179,7 +1178,7 @@ Window_SkillLearnData.prototype.hasLearnCost = function() {
       var cost = this._skill.learnCostJp;
       cost += this._actor.customLearnSkillJpCost(this._skill);
       return cost > 0;
-    } 
+    }
     if (this._skill.learnCost.length > 0) return true;
     return false;
 };
