@@ -1,57 +1,70 @@
-var JPC = JPC || {};
-JPC._loaded = false;
+var JCP = JCP || {};
+JCP._loaded = false;
 
-JPC.DM_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+JCP.DM_isDatabaseLoaded = DataManager.isDatabaseLoaded;
 DataManager.isDatabaseLoaded = function() {
-	if (!JPC.DM_isDatabaseLoaded.call(this)) return false;
-	if (!JPC._loaded) {
+	if (!JCP.DM_isDatabaseLoaded.call(this)) return false;
+	if (!JCP._loaded) {
 
-		if (window.Yanfly && Yanfly.SLS)
+		if (window.Yanfly && Yanfly.SLS) {
 			this.processGroupNotetags($dataClasses, $dataSkills);
+		}
 
-		JPC._loaded = true;
+		this.processPassiveNotetags($dataSkills);
+
+		JCP._loaded = true;
 	}
-}
+	return true;
+};
 
 DataManager.processGroupNotetags = function(classes, skills) {
 	var classGroupTag = /<learn skill group: *(\S+)>/i;
 	var skillGroupTag = /<skill group: *(\S+)>/i;
-	var groupSkills = {};
+	JCP.groupSkills = JCP.groupSkills || {};
 
 	// add skill IDs to groupSkills object with the key being their group name
-	skills.forEach(function(skl) {
+	skills.slice(1).forEach(function(skl) {
 
-		var tags = skl.note.split(/[\r\n]+/);
-
-		tags.forEach(function(line) {
+		skl.note.split("\n").forEach(function(line) {
 
 			var match = line.match(skillGroupTag);
 			if (match) {
 				var group = match[1];
-				if (!groupSkills[group]) groupSkills[group] = [];
-				groupSkills[group].push(skl.id);
+				if (!JCP.groupSkills[group]) JCP.groupSkills[group] = [];
+				JCP.groupSkills[group].push(skl.id);
+				skl.name += " (" + group + ")";
 			}
 		});
 
 	});
 
 	// apply all skills to classes requesting the group
-	classes.forEach(function(cls) {
+	classes.slice(1).forEach(function(cls) {
 
-		var tags = cls.note.split(/[\r\n]+/);
 		cls.learnSkills = cls.learnSkills || [];
 
-		tags.forEach(function(line) {
+		cls.note.split("\n").forEach(function(line) {
 
 			var match = line.match(classGroupTag);
 			if (match) {
 				var group = match[1];
-				if (!groupSkills[group])
-					JPC.error('Skill Group does not exist: "' + group + '"');
+				if (!JCP.groupSkills[group])
+					JCP.error('Skill Group does not exist: "' + group + '"');
 				else
-					cls.learnSkills = cls.learnSkills.concat(groupSkills[group]);
+					cls.learnSkills = cls.learnSkills.concat(JCP.groupSkills[group]);
 			}
 		});
 
 	});
-}
+};
+
+DataManager.processPassiveNotetags = function(skills) {
+	var passiveTag = /<(?:passive +(?:skill|trait)s?|trait)>/;
+
+	skills.slice(1).forEach(function(skl) {
+		skl.isPassive = skl.note.split("\n").some(function(line) {
+			return passiveTag.test(line);
+		});
+		if (skl.isPassive) skl.name += " (P)";
+	});
+};

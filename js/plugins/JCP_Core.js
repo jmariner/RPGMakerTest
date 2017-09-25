@@ -1,9 +1,9 @@
-var JPC = JPC || {};
+var JCP = JCP || {};
 
-JPC.debug = function(msg) {
-	console.log("[JPC Debug]", msg);
+JCP.debug = function(msg) {
+	console.log("[JCP Debug]", msg);
 }
 
-JPC.error = function(msg) {
-	throw "[JPC Error] " + msg;
+JCP.error = function(msg) {
+	throw "[JCP Error] " + msg;
 };
