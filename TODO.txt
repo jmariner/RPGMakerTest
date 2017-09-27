@@ -1,0 +1,2 @@
+profs: use the "param" field on classes; apply a formula to each one
+	param items are in order: Max HP, Max MP, Atk, Def, Magic attack, magic def, agility, luck
