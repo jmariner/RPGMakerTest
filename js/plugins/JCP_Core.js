@@ -5,7 +5,9 @@ var JCP = JCP || {};
  * @author Justin and Colin
  *
  * @param Debug Mode
- * @type state
+ * @type boolean
+ * @on ON
+ * @off OFF
  * @desc If plugin should be ran with debugging options enabled.
  * @default false
  */
