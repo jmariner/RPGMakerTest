@@ -1,2 +1,7 @@
+general
+	afaik $gameActors is the live data and $dataActors, $dataClasses, etc, are the data loaded from JSON
+	so edit the $game____ variables to make changes
+
 profs: use the "param" field on classes; apply a formula to each one
 	param items are in order: Max HP, Max MP, Atk, Def, Magic attack, magic def, agility, luck
+	use _paramPlus on Game_BattlerBase instead of editing raw param data
